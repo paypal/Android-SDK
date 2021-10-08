@@ -11,7 +11,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -38,6 +44,21 @@ class PaymentMethodsFragment : Fragment() {
             setContent {
                 DemoTheme {
                     Column {
+                        TopAppBar(
+                            title = { Text(text = "Android Demo App") },
+                            actions = {
+                                IconButton(onClick = {
+                                    launchSettingsFragment()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Settings,
+                                        contentDescription = "Settings Icon",
+                                        tint = MaterialTheme.colors.onPrimary
+                                    )
+                                }
+                            }
+                        )
+
                         Button(
                             onClick = { launchCardFragment() },
                             modifier = Modifier

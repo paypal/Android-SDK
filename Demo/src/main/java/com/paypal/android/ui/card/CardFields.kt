@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
@@ -25,10 +28,15 @@ fun CardFields(
     val expirationDate: String by cardViewModel.expirationDate.observeAsState("")
     val securityCode: String by cardViewModel.securityCode.observeAsState("")
 
+    val textFieldColors = TextFieldDefaults.textFieldColors(
+        backgroundColor = Color.Transparent
+    )
+
     Column(modifier = modifier) {
         CardField(
             cardNumber = cardNumber,
             onNumberChange = { cardViewModel.onCardNumberChange(it) },
+            colors = textFieldColors,
             modifier = Modifier.fillMaxWidth()
         )
         Row {
@@ -42,11 +50,13 @@ fun CardFields(
                 label = { Text(stringResource(R.string.card_field_expiration)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
-                modifier = Modifier.weight(1F)
+                modifier = Modifier.weight(1F),
+                colors = textFieldColors
             )
             SecurityCodeField(
                 securityCode = securityCode,
                 onSecurityCodeChange = { cardViewModel.onSecurityCodeChange(it) },
+                colors = textFieldColors,
                 modifier = Modifier.weight(1F)
             )
         }
@@ -54,13 +64,19 @@ fun CardFields(
 }
 
 @Composable
-fun CardField(cardNumber: String, onNumberChange: (String) -> Unit, modifier: Modifier = Modifier) {
+fun CardField(
+    cardNumber: String,
+    onNumberChange: (String) -> Unit,
+    colors: TextFieldColors,
+    modifier: Modifier = Modifier
+) {
     TextField(
         value = TextFieldValue(cardNumber, TextRange(cardNumber.length)),
         onValueChange = { onNumberChange(it.text) },
         label = { Text(stringResource(R.string.card_field_card_number)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
+        colors = colors,
         modifier = modifier
     )
 }
@@ -69,6 +85,7 @@ fun CardField(cardNumber: String, onNumberChange: (String) -> Unit, modifier: Mo
 fun SecurityCodeField(
     securityCode: String,
     onSecurityCodeChange: (String) -> Unit,
+    colors: TextFieldColors,
     modifier: Modifier = Modifier
 ) {
     TextField(
@@ -77,6 +94,7 @@ fun SecurityCodeField(
         label = { Text(stringResource(R.string.card_field_security_code)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
+        colors = colors,
         modifier = modifier
     )
 }

@@ -25,7 +25,7 @@ class DemoActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
 

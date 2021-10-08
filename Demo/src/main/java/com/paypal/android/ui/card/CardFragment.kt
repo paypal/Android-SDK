@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
@@ -30,7 +31,8 @@ class CardFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
-        cardViewModel.environment = sharedPreferences.getString(PreferenceConstants.ENVIRONMENT_KEY, "")
+        cardViewModel.environment =
+            sharedPreferences.getString(PreferenceConstants.ENVIRONMENT_KEY, "")
     }
 
     override fun onCreateView(
@@ -42,6 +44,8 @@ class CardFragment : Fragment() {
             setContent {
                 DemoTheme {
                     Column {
+                        TopAppBar(title = { Text(text = "Android Demo App") })
+
                         DropDown(
                             cardViewModel.autoFillCards.map { it.first },
                             stringResource(R.string.card_field_prefill_card_fields),

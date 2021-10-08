@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -17,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -37,12 +37,13 @@ fun DropDown(
                 .clickable {
                     expanded.value = !expanded.value
                 }
-                .border(1.dp, Color.Black, RoundedCornerShape(4.dp))
+                .border(1.dp, MaterialTheme.colors.onBackground, RoundedCornerShape(4.dp))
                 .padding(8.dp)
         ) {
             Text(
                 selectedText.value,
-                modifier = Modifier.weight(1F)
+                modifier = Modifier.weight(1F),
+                color = MaterialTheme.colors.onBackground
             )
             Icon(Icons.Filled.ArrowDropDown, "contentDescription")
         }

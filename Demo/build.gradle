@@ -82,6 +82,8 @@ dependencies {
     testImplementation deps.junit
     androidTestImplementation deps.androidxJUnit
     androidTestImplementation deps.androidxEspressoCore
+
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
 }
 
 
