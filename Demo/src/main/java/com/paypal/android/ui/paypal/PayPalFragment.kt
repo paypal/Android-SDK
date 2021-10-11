@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.paypal.android.BuildConfig
 import com.paypal.android.R
 import com.paypal.android.checkout.PayPalClient
 import com.paypal.android.checkout.PayPalClientListener
@@ -29,23 +30,17 @@ import com.paypal.android.ui.theme.DemoTheme
 class PayPalFragment : Fragment(), PayPalClientListener {
 
     private val orderId = ""
-    private val clientId = ""
-    private val returnUrl = ""
+    private val clientId = "AXD8q8D3tq0vaZb5j6EFB-HsLdPZXDFmYbnmaJCn40ohZ3CiQnLg2kkx-H_Ze0z8GVfcJ879zA21BeMB"
+    private val returnUrl = "${BuildConfig.APPLICATION_ID}://paypalpay"
 
-    private val paypalConfig = PayPalConfiguration(
-        application = requireActivity().application,
-        clientId = clientId,
-        returnUrl = returnUrl,
-        environment = Environment.SANDBOX
-    )
-
-    private val payPalClient = PayPalClient(payPalConfig = paypalConfig)
+    private lateinit var payPalClient: PayPalClient
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        initPayPalCheckout()
         return ComposeView(requireContext()).apply {
             setContent {
                 PayPalFragmentView()
@@ -64,6 +59,16 @@ class PayPalFragment : Fragment(), PayPalClientListener {
                     .fillMaxWidth()
             ) { Text(stringResource(R.string.start_checkout)) }
         }
+    }
+
+    private fun initPayPalCheckout() {
+        val payPalConfiguration = PayPalConfiguration(
+            application = requireActivity().application,
+            clientId = clientId,
+            returnUrl = returnUrl,
+            environment = Environment.SANDBOX
+        )
+        payPalClient = PayPalClient(payPalConfig = payPalConfiguration)
     }
 
     private fun launchNativeCheckout() {
