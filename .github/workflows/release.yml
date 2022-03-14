@@ -10,14 +10,14 @@ env:
 jobs:
   version_snapshot:
     name: Version Is snapshot
-    if: ${{ github.event.inputs.version }} == *-SNAPSHOT
+    if: ${{ github.event.inputs.version }} == '*-SNAPSHOT'
     runs-on: ubuntu-latest
     steps:
       - run: echo snapshot
         shell: bash
   version_release:
     name: Version Is release
-    if: ${{ github.event.inputs.version }} != *-SNAPSHOT
+    if: ${{ github.event.inputs.version }} != '*-SNAPSHOT'
     runs-on: ubuntu-latest
     steps:
       - run: echo release
@@ -26,7 +26,11 @@ jobs:
     name: Store version env
     runs-on: ubuntu-latest
     steps:
-      - run: echo '${{ github.event.inputs.version }} == *-SNAPSHOT'
+      - run: if [[ ${{ github.event.inputs.version }} == *-SNAPSHOT ]] # * is used for pattern matching
+          then
+          echo "true";
+          else
+          echo "false"; fi
         shell: bash
   #First we build
 #  build_aar:
