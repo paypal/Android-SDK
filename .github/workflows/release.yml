@@ -16,7 +16,7 @@ jobs:
       - run: echo release
         shell: bash
   version_release:
-    name: Version Is snapshot
+    name: Version Is release
     if: ${{ github.event.inputs.version }} != *-SNAPSHOT
     runs-on: ubuntu-latest
     steps:
