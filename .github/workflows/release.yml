@@ -26,7 +26,8 @@ jobs:
     name: Store version env
     runs-on: ubuntu-latest
     steps:
-      - run: name = '${{ github.event.inputs.version }} == *-SNAPSHOT'
+      - run: |
+        name = '${{ github.event.inputs.version }} == *-SNAPSHOT'
         echo $name
         shell: bash
   #First we build
