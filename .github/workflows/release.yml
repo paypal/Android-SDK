@@ -10,14 +10,14 @@ env:
 jobs:
   version_snapshot:
     name: Version Is snapshot
-    if: ${{ github.event.inputs.version }} == '90j9ihnouin'
+    if: 'false'
     runs-on: ubuntu-latest
     steps:
       - run: echo snapshot
         shell: bash
   version_release:
     name: Version Is release
-    if: ${{ github.event.inputs.version }} != '*-SNAPSHOT'
+    if: 'true'
     runs-on: ubuntu-latest
     steps:
       - run: echo release
