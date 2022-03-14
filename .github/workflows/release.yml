@@ -10,14 +10,25 @@ env:
 jobs:
   version_snapshot:
     name: Version Is snapshot
-    if: version == *-SNAPSHOT
+    if: ${{ github.event.inputs.version }} == *-SNAPSHOT
     runs-on: ubuntu-latest
-    run: echo snapshot
+    steps:
+      - run: echo release
+        shell: bash
   version_release:
+    name: Version Is snapshot
+    if: ${{ github.event.inputs.version }} != *-SNAPSHOT
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo release
+        shell: bash
+  version_env:
     name: Version Is snapshot
     if: version != *-SNAPSHOT
     runs-on: ubuntu-latest
-    run: echo release
+    steps:
+      - run: echo ::set-env name=IS_SNAPSHOT::${{ github.event.inputs.version }} == *-SNAPSHOT
+        shell: bash
   #First we build
 #  build_aar:
 #    name: Build
