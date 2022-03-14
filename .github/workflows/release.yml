@@ -10,7 +10,7 @@ env:
 jobs:
   version_snapshot:
     name: Version Is snapshot
-    if: ${{ github.event.inputs.version }} == '*-SNAPSHOT'
+    if: ${{ github.event.inputs.version }} == '90j9ihnouin'
     runs-on: ubuntu-latest
     steps:
       - run: echo snapshot
@@ -27,7 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-        [ ${{ github.event.inputs.version }} == *-SNAPSHOT ]; echo "$?"
+        [ ${{ github.event.inputs.version }} == *-SNAPSHOT ]
+        echo "$?"
         shell: bash
   #First we build
 #  build_aar:
