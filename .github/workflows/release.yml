@@ -26,11 +26,8 @@ jobs:
     name: Store version env
     runs-on: ubuntu-latest
     steps:
-      - run: if [[ ${{ github.event.inputs.version }} == *-SNAPSHOT ]] # * is used for pattern matching
-          then
-          echo "true";
-          else
-          echo "false"; fi
+      - run: name = '${{ github.event.inputs.version }} == *-SNAPSHOT'
+        echo $name
         shell: bash
   #First we build
 #  build_aar:
