@@ -23,8 +23,7 @@ jobs:
       - run: echo release
         shell: bash
   version_env:
-    name: Version Is snapshot
-    if: version != *-SNAPSHOT
+    name: Store version env
     runs-on: ubuntu-latest
     steps:
       - run: echo ::set-env name=IS_SNAPSHOT::${{ github.event.inputs.version }} == *-SNAPSHOT
