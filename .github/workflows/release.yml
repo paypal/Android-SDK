@@ -8,26 +8,26 @@ on:
 env:
   SIGNING_KEY_FILE_PATH: /home/runner/secretKey.gpg
 jobs:
-  version_snapshot:
-    name: Version Is snapshot
-    if: 'false'
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo snapshot
-        shell: bash
-  version_release:
-    name: Version Is release
-    if: 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo release
-        shell: bash
-  version_env:
-    name: Store version env
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo hello
-        shell: bash
+#  version_snapshot:
+#    name: Version Is snapshot
+#    if: 'false'
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: echo snapshot
+#        shell: bash
+#  version_release:
+#    name: Version Is release
+#    if: 'true'
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: echo release
+#        shell: bash
+#  version_env:
+#    name: Store version env
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: echo hello
+#        shell: bash
   #First we build
 #  build_aar:
 #    name: Build
@@ -134,37 +134,37 @@ jobs:
 #          git push origin HEAD ${{ github.event.inputs.version }}
 #
 #  #Once the version is updated, we publish all modules in parallel
-#  publish_core:
+  publish_core:
 #    needs: [ change_version ]
-#    name: Publish Core
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout Repository
-#        uses: actions/checkout@v2
-#      - name: Set up Java 11
-#        uses: actions/setup-java@v2
-#        with:
-#          java-version: '11'
-#          distribution: 'zulu'
-#      - name: Decode Signing Key
-#        uses: ./.github/actions/decode_signing_key_action
-#        with:
-#          signing_key_file: ${{ secrets.SIGNING_KEY_FILE }}
-#          signing_file_path: ${{ env.SIGNING_KEY_FILE_PATH }}
-#      - name: Set github user
-#        uses: ./.github/actions/set_github_user
+    name: Publish Core
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Set up Java 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'zulu'
+      - name: Decode Signing Key
+        uses: ./.github/actions/decode_signing_key_action
+        with:
+          signing_key_file: ${{ secrets.SIGNING_KEY_FILE }}
+          signing_file_path: ${{ env.SIGNING_KEY_FILE_PATH }}
+      - name: Set github user
+        uses: ./.github/actions/set_github_user
 #      - name: Pull updated files
 #        run: |
 #          git pull
-#      - name: Publish Core
-#        uses: ./.github/actions/publish_module
-#        with:
-#          module: Core
-#          sonatype_usr: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
-#          sonatype_pwd: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
-#          signing_key_id: ${{ secrets.SIGNING_KEY_ID }}
-#          signing_key_pwd: ${{ secrets.SIGNING_KEY_PASSWORD }}
-#          signing_key_file: ${{ env.SIGNING_KEY_FILE_PATH }}
+      - name: Publish Core
+        uses: ./.github/actions/publish_module
+        with:
+          module: Core
+          sonatype_usr: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+          sonatype_pwd: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+          signing_key_id: ${{ secrets.SIGNING_KEY_ID }}
+          signing_key_pwd: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          signing_key_file: ${{ env.SIGNING_KEY_FILE_PATH }}
 #  publish_card:
 #    needs: [ change_version ]
 #    name: Publish Card
