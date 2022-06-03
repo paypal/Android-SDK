@@ -49,11 +49,14 @@ dependencies {
     implementation deps.androidxCoreKtx
     implementation deps.androidxAppcompat
     implementation deps.kotlinxAndroidCoroutines
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.21"
 
     testImplementation deps.junit
     testImplementation deps.mockk
     testImplementation deps.robolectric
     testImplementation deps.kotlinxAndroidCoroutinesTest
+
+    testImplementation 'org.json:json:20140107'
 
     androidTestImplementation deps.androidxJUnit
     androidTestImplementation deps.androidxEspressoCore
