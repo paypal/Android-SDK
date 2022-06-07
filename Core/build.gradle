@@ -51,6 +51,7 @@ dependencies {
     implementation deps.kotlinxAndroidCoroutines
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.21"
 
+    testImplementation deps.jsonAssert
     testImplementation deps.junit
     testImplementation deps.mockk
     testImplementation deps.robolectric
