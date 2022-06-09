@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/paymentMethodsFragment"
-        android:name="com.paypal.android.ui.PaymentMethodsFragment"
+        android:name="com.paypal.android.ui.paymentmethods.PaymentMethodsFragment"
         android:label="PaymentMethodsFragment">
         <action
             android:id="@+id/action_paymentMethodsFragment_to_cardFragment"
@@ -39,7 +39,7 @@
         android:label="ThreeDSecureFragment" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.paypal.android.ui.SettingsFragment"
+        android:name="com.paypal.android.ui.settings.SettingsFragment"
         android:label="SettingsFragment" />
     <fragment
         android:id="@+id/payPalButtonsFragment"

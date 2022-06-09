@@ -1,4 +1,4 @@
-package com.paypal.android.ui
+package com.paypal.android.ui.paymentmethods
 
 import android.os.Bundle
 import android.view.LayoutInflater

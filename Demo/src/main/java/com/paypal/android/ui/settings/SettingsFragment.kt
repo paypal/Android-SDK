@@ -1,4 +1,4 @@
-package com.paypal.android.ui
+package com.paypal.android.ui.settings
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
