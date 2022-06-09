@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <com.paypal.android.ui.paymentbutton.PayPalButton
-            android:id="@+id/payPalButton"
+            android:id="@+id/pay_pal_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/standard_margin"
@@ -28,7 +28,7 @@
             android:tag="PayPal Credit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/payPalButton" />
+            app:layout_constraintTop_toBottomOf="@id/pay_pal_button" />
         <com.paypal.android.ui.paymentbutton.PayLaterButton
             android:id="@+id/payPalPayLater"
             android:layout_width="0dp"

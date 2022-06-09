@@ -4,6 +4,7 @@
     <!-- Payment Methods -->
     <string name="payment_methods_card">Card</string>
     <string name="payment_methods_paypal">PayPal</string>
+    <string name="payment_methods_venmo">Venmo</string>
     <string name="payment_methods_menu_settings">Settings</string>
 
     <!-- Card Fields -->
@@ -28,6 +29,8 @@
     <string name="creating_order">Creating order…</string>
     <string name="custom_styling">Style Buttons</string>
 
+    <!-- Venmo -->
+    <string name="launch_venmo">Launch Venmo</string>
 
     <string name="auth_credentials_missing_title">Auth Credentials Required</string>
     <string name="auth_credentials_missing_message">You can set authentication credentials in the <b><i>paypal.properties</i></b> file in the root of the project directory.</string>
@@ -39,7 +42,5 @@
     <string name="select_label">Select Label</string>
     <string name="select_shape">Select Shape</string>
     <string name="select_size">Select Size</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

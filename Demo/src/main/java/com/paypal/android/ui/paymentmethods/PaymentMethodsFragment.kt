@@ -12,6 +12,7 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.paypal.android.R
 import com.paypal.android.databinding.FragmentPaymentMethodsBinding
+import com.paypal.android.ui.venmo.VenmoFragment
 
 class PaymentMethodsFragment : Fragment() {
 
@@ -32,6 +33,7 @@ class PaymentMethodsFragment : Fragment() {
         binding.run {
             cardButton.setOnClickListener { launchCardFragment() }
             payPalButton.setOnClickListener { launchPayPalFragment() }
+            venmoButton.setOnClickListener { launchVenmoFragment() }
         }
         return binding.root
     }
@@ -60,6 +62,10 @@ class PaymentMethodsFragment : Fragment() {
 
     private fun launchSettingsFragment() {
         navigate(PaymentMethodsFragmentDirections.actionPaymentMethodsFragmentToSettingsFragment())
+    }
+
+    private fun launchVenmoFragment() {
+        navigate(PaymentMethodsFragmentDirections.actionPaymentMethodsFragmentToVenmoFragment())
     }
 
     private fun navigate(action: NavDirections) {
