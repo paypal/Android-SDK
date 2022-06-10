@@ -45,6 +45,6 @@
     <fragment
         android:id="@+id/venmoFragment"
         android:name="com.paypal.android.ui.venmo.VenmoFragment"
-        android:label="fragment_venmo"
+        android:label="Pay with Venmo"
         tools:layout="@layout/fragment_venmo" />
 </navigation>
