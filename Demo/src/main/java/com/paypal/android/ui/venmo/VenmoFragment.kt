@@ -57,29 +57,30 @@ class VenmoFragment : Fragment() {
         }
     }
 
-    private suspend fun launchVenmo() {
+    private fun launchVenmo() {
         progressIndicatorVisible = true
-
-        val facilitatorAccessToken = authApi.postOAuthToken().accessToken
-        val order = createOrder()
-
+//        val order = withContext(IO){
+//            createOrder()
+//        }
+        val facilitatorAccessToken =
+            "A21AANJT-DPnNpO6ZGzrjUH7k__21PSBydkdheCtnuCcL6QVD5cUvr_GUr5anpNkEsDopRg9wzc3MRNqhK69xJ9qy7YLxerQ" //authApi.postOAuthToken().accessToken
+        val clientId =
+            "AdLzRW18VHoABXiBhpX2gf0qhXwiW4MmFVHL69V90vciCg_iBLGyJhlf7EuWtFcdNjGiDfrwe7rmhvMZ"
+        val orderId = "68B05296CR090552C"
         progressIndicatorVisible = false
         val uri = Uri.parse("https://www.paypal.com/smart/checkout/venmo")
             .buildUpon()
-            .appendQueryParameter("orderID", order.id!!)
+            .appendQueryParameter("orderID", orderId)
+            //.appendQueryParameter("enableFunding", "venmo")
+            //.appendQueryParameter("fundingSource", "venmo")
             .appendQueryParameter("buyerCountry", "US")
-            .appendQueryParameter("fundingSource", "venmo")
             .appendQueryParameter("sessionUID", "NOOP")
             .appendQueryParameter("buttonSessionID", "NOOP")
-            .appendQueryParameter("channel", "")
-            .appendQueryParameter("enableFunding", "venmo")
-            .appendQueryParameter("clientID", config.clientId)
+            //.appendQueryParameter("channel", "mobile-web")
+            .appendQueryParameter("clientID", clientId)
             .appendQueryParameter("facilitatorAccessToken", facilitatorAccessToken)
             .appendQueryParameter("commit", "false")
-            .appendQueryParameter("webCheckoutUrl", "")
             .appendQueryParameter("env", "Sandbox")
-            .appendQueryParameter("pageUrl", "com.paypal.android.demo://return_url")
-            .appendQueryParameter("sdkVersion", "5.0.304")
             .build()
 
         val intent = Intent(Intent.ACTION_VIEW, uri)
