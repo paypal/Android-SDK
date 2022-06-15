@@ -11,9 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.paypal.android.BuildConfig
 import com.paypal.android.R
-import com.paypal.android.api.model.ApplicationContext
+import com.paypal.android.api.model.Amount
 import com.paypal.android.api.model.CreateOrderRequest
 import com.paypal.android.api.model.Payee
+import com.paypal.android.api.model.PurchaseUnit
 import com.paypal.android.api.services.PayPalDemoApi
 import com.paypal.android.card.ApproveOrderListener
 import com.paypal.android.card.Card
@@ -172,7 +173,18 @@ class CardFragment : Fragment() {
         dataCollectorHandler.setLogging(true)
         updateStatusText("Creating order...")
 
-        val orderRequest = buildOrderRequest()
+        val orderRequest = CreateOrderRequest(
+            intent = "AUTHORIZE",
+            purchaseUnit = listOf(
+                PurchaseUnit(
+                    amount = Amount(
+                        currencyCode = "USD",
+                        value = "10.99"
+                    )
+                )
+            ),
+            payee = Payee(emailAddress = "anpelaez@paypal.com")
+        )
         val order = payPalDemoApi.fetchOrderId(countryCode = "CO", orderRequest = orderRequest)
 
         val clientMetadataId = dataCollectorHandler.getClientMetadataId(order.id)
@@ -200,29 +212,6 @@ class CardFragment : Fragment() {
             )
         }
         cardClient.approveOrder(requireActivity(), cardRequest)
-    }
-
-    private fun buildOrderRequest(): CreateOrderRequest {
-        val createOrderRequest = CreateOrderRequest(
-            intent = "AUTHORIZE",
-            purchaseUnit = listOf(
-                com.paypal.android.api.model.PurchaseUnit(
-                    amount = com.paypal.android.api.model.Amount(
-                        currencyCode = "USD",
-                        value = "10.99"
-                    )
-                )
-            ),
-            payee = Payee(emailAddress = "anpelaez@paypal.com")
-        )
-
-        if (shouldRequestThreeDSecure) {
-            createOrderRequest.applicationContext = ApplicationContext(
-                returnURL = APP_RETURN_URL,
-                cancelURL = APP_CANCEL_URL
-            )
-        }
-        return createOrderRequest
     }
 
     private fun updateStatusText(text: String) {
