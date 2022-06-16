@@ -9,5 +9,6 @@ internal data class ConfirmPaymentSourceResponse(
     val status: OrderStatus? = null,
     val payerActionHref: String? = null,
     val paymentSource: PaymentSource? = null,
-    val purchaseUnits: List<PurchaseUnit>? = null
+    val purchaseUnits: List<PurchaseUnit>? = null,
+    val authorizeHref: String? = null
 )

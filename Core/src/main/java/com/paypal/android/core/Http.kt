@@ -34,7 +34,8 @@ internal class Http(
                 if (httpRequest.method == HttpMethod.POST) {
                     try {
                         connection.doOutput = true
-                        connection.outputStream.write(httpRequest.body?.toByteArray())
+                        val byteArray = httpRequest.body?.toByteArray() ?: ByteArray(0)
+                        connection.outputStream.write(byteArray)
                         connection.outputStream.flush()
                         connection.outputStream.close()
                     } catch (e: IOException) {

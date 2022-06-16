@@ -4,6 +4,9 @@ import com.paypal.android.card.CardRequest
 import com.paypal.android.card.CardRequestFactory
 import com.paypal.android.card.CardResponseParser
 import com.paypal.android.core.API
+import com.paypal.android.core.APIRequest
+import com.paypal.android.core.HttpRequest
+import com.paypal.android.core.HttpResponse
 
 internal class CardAPI(
     private val api: API,
@@ -33,5 +36,13 @@ internal class CardAPI(
         } else {
             return responseParser.parseGetOrderInfoResponse(httpResponse)
         }
+    }
+
+    suspend fun send(request: HttpRequest): HttpResponse {
+        return api.send(request)
+    }
+
+    suspend fun send(request: APIRequest): HttpResponse {
+        return api.send(request)
     }
 }

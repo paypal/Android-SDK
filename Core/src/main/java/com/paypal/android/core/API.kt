@@ -9,9 +9,15 @@ class API internal constructor(
     constructor(configuration: CoreConfig) :
             this(configuration, Http(), HttpRequestFactory())
 
-    suspend fun send(apiRequest: APIRequest): HttpResponse {
+    suspend fun send(apiRequest: APIRequest, authOverride: String? = null): HttpResponse {
         val httpRequest =
             httpRequestFactory.createHttpRequestFromAPIRequest(apiRequest, configuration)
+        httpRequest.authOverride = authOverride
+        return http.send(httpRequest)
+    }
+
+    suspend fun send(httpRequest: HttpRequest): HttpResponse {
+        httpRequestFactory.authorizeHttpRequest(httpRequest, configuration)
         return http.send(httpRequest)
     }
 }

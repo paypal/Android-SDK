@@ -10,5 +10,5 @@ data class CardResult(
     val orderID: String,
     val status: OrderStatus? = null,
     val paymentSource: PaymentSource? = null,
-    val deepLinkUrl: Uri? = null
+    val deepLinkUrl: Uri? = null,
 )

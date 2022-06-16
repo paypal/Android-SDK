@@ -30,14 +30,24 @@ internal class CardRequestFactory {
                 cardJSON.put("billing_address", billingAddressJSON)
             }
 
+            val vaultOptions = JSONObject()
+                .put("confirm_payment_token", "ON_ORDER_COMPLETION")
+
+            val attributesJSON = JSONObject()
+                .put("vault", vaultOptions)
+
+            val customerJSON = JSONObject()
+                .put("id", "123")
+            attributesJSON.put("customer", customerJSON)
+
             threeDSecureRequest?.also {
                 val verificationJSON = JSONObject()
                     .put("method", it.sca.name)
-                val attributesJSON = JSONObject()
-                    .put("verification", verificationJSON)
-                cardJSON.put("attributes", attributesJSON)
+                attributesJSON.put("verification", verificationJSON)
                 // add return and cancel url when its supported
             }
+
+            cardJSON.put("attributes", attributesJSON)
 
             val paymentSourceJSON = JSONObject().put("card", cardJSON)
             val bodyJSON = JSONObject().put("payment_source", paymentSourceJSON)

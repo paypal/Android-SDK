@@ -105,7 +105,7 @@ class CardAPIUnitTest {
         val httpResponse = HttpResponse(200, emptyMap(), successBody)
         coEvery { api.send(apiRequest) } returns httpResponse
 
-        sut.confirmPaymentSource(cardRequest)
+        sut.confirmPaymentSource(cardRequest, customerToken)
         coVerify { api.send(apiRequest) }
     }
 
@@ -114,7 +114,7 @@ class CardAPIUnitTest {
         val httpResponse = HttpResponse(200, headers, successBody)
         coEvery { api.send(apiRequest) } returns httpResponse
 
-        val result = sut.confirmPaymentSource(cardRequest)
+        val result = sut.confirmPaymentSource(cardRequest, customerToken)
 
         assertEquals("testOrderID", result.orderID)
         assertEquals(OrderStatus.APPROVED, result.status)
@@ -127,7 +127,7 @@ class CardAPIUnitTest {
 
         lateinit var capturedError: PayPalSDKError
         try {
-            sut.confirmPaymentSource(cardRequest)
+            sut.confirmPaymentSource(cardRequest, customerToken)
         } catch (e: PayPalSDKError) {
             capturedError = e
         }
@@ -148,7 +148,7 @@ class CardAPIUnitTest {
 
             lateinit var capturedError: PayPalSDKError
             try {
-                sut.confirmPaymentSource(cardRequest)
+                sut.confirmPaymentSource(cardRequest, customerToken)
             } catch (e: PayPalSDKError) {
                 capturedError = e
             }
@@ -168,7 +168,7 @@ class CardAPIUnitTest {
 
             lateinit var capturedError: PayPalSDKError
             try {
-                sut.confirmPaymentSource(cardRequest)
+                sut.confirmPaymentSource(cardRequest, customerToken)
             } catch (e: PayPalSDKError) {
                 capturedError = e
             }
@@ -190,7 +190,7 @@ class CardAPIUnitTest {
 
             lateinit var capturedError: PayPalSDKError
             try {
-                sut.confirmPaymentSource(cardRequest)
+                sut.confirmPaymentSource(cardRequest, customerToken)
             } catch (e: PayPalSDKError) {
                 capturedError = e
             }
@@ -209,7 +209,7 @@ class CardAPIUnitTest {
 
         lateinit var capturedError: PayPalSDKError
         try {
-            sut.confirmPaymentSource(cardRequest)
+            sut.confirmPaymentSource(cardRequest, customerToken)
         } catch (e: PayPalSDKError) {
             capturedError = e
         }
@@ -228,7 +228,7 @@ class CardAPIUnitTest {
 
         lateinit var capturedError: PayPalSDKError
         try {
-            sut.confirmPaymentSource(cardRequest)
+            sut.confirmPaymentSource(cardRequest, customerToken)
         } catch (e: PayPalSDKError) {
             capturedError = e
         }
@@ -246,7 +246,7 @@ class CardAPIUnitTest {
 
             lateinit var capturedError: PayPalSDKError
             try {
-                sut.confirmPaymentSource(cardRequest)
+                sut.confirmPaymentSource(cardRequest, customerToken)
             } catch (e: PayPalSDKError) {
                 capturedError = e
             }
@@ -259,7 +259,7 @@ class CardAPIUnitTest {
 
         lateinit var capturedError: PayPalSDKError
         try {
-            sut.confirmPaymentSource(cardRequest)
+            sut.confirmPaymentSource(cardRequest, customerToken)
         } catch (e: PayPalSDKError) {
             capturedError = e
         }

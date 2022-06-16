@@ -1,5 +1,6 @@
 package com.paypal.android.card
 
+import android.util.Log
 import com.paypal.android.card.api.ConfirmPaymentSourceResponse
 import com.paypal.android.card.api.GetOrderInfoResponse
 import com.paypal.android.card.model.PaymentSource
@@ -18,6 +19,7 @@ internal class CardResponseParser {
     fun parseConfirmPaymentSourceResponse(httpResponse: HttpResponse): ConfirmPaymentSourceResponse =
         try {
             val bodyResponse = httpResponse.body!!
+            Log.d("TAG", httpResponse.headers.toString())
 
             val json = PaymentsJSON(bodyResponse)
             val status = json.getString("status")
@@ -30,7 +32,8 @@ internal class CardResponseParser {
                 OrderStatus.valueOf(status),
                 payerActionHref,
                 json.optMapObject("payment_source.card") { PaymentSource(it) },
-                json.optMapObjectArray("purchase_units") { PurchaseUnit(it) }
+                json.optMapObjectArray("purchase_units") { PurchaseUnit(it) },
+                json.getLinkHref("authorize")
             )
         } catch (ignored: JSONException) {
             val correlationID = httpResponse.headers["Paypal-Debug-Id"]

@@ -88,7 +88,7 @@ class CardClientUnitTest {
     fun `approve order notifies listener of confirm payment source success`() = runTest {
         val sut = createCardClient(testScheduler)
 
-        coEvery { cardAPI.confirmPaymentSource(cardRequest) } returns confirmPaymentSourceResponse
+        coEvery { cardAPI.confirmPaymentSource(cardRequest, customerToken) } returns confirmPaymentSourceResponse
 
         sut.approveOrder(activity, cardRequest)
         advanceUntilIdle()
@@ -105,7 +105,7 @@ class CardClientUnitTest {
         val sut = createCardClient(testScheduler)
 
         val error = PayPalSDKError(0, "mock_error_message")
-        coEvery { cardAPI.confirmPaymentSource(cardRequest) } throws error
+        coEvery { cardAPI.confirmPaymentSource(cardRequest, customerToken) } throws error
 
         sut.approveOrder(activity, cardRequest)
         advanceUntilIdle()
@@ -124,7 +124,7 @@ class CardClientUnitTest {
         val threeDSecureAuthChallengeResponse =
             ConfirmPaymentSourceResponse(orderID, OrderStatus.APPROVED, "/payer/action/href")
 
-        coEvery { cardAPI.confirmPaymentSource(cardRequest) } returns threeDSecureAuthChallengeResponse
+        coEvery { cardAPI.confirmPaymentSource(cardRequest, customerToken) } returns threeDSecureAuthChallengeResponse
 
         sut.approveOrder(activity, cardRequest)
         advanceUntilIdle()

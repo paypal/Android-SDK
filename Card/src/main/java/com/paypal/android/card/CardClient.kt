@@ -1,6 +1,7 @@
 package com.paypal.android.card
 
 import android.net.Uri
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.braintreepayments.api.BrowserSwitchClient
 import com.braintreepayments.api.BrowserSwitchOptions
@@ -10,12 +11,19 @@ import com.paypal.android.card.api.CardAPI
 import com.paypal.android.card.api.GetOrderRequest
 import com.paypal.android.card.model.CardResult
 import com.paypal.android.core.API
+import com.paypal.android.core.APIRequest
 import com.paypal.android.core.CoreConfig
+import com.paypal.android.core.HttpMethod
+import com.paypal.android.core.HttpRequest
 import com.paypal.android.core.PayPalSDKError
+import com.paypal.android.core.PaymentsJSON
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import java.net.URL
+import java.util.*
 
 /**
  * Use this client to approve an order with a [Card].
@@ -62,7 +70,52 @@ class CardClient internal constructor(
 
     private suspend fun confirmPaymentSource(activity: FragmentActivity, cardRequest: CardRequest) {
         val response = cardAPI.confirmPaymentSource(cardRequest)
-        if (response.payerActionHref == null) {
+        if (response.authorizeHref != null) {
+
+            val requestID = UUID.randomUUID().toString()
+
+            // authorize order
+//            val headers = mutableMapOf("PayPal-Request-Id" to requestID)
+//            val authorizeRequest = HttpRequest(URL(response.authorizeHref), HttpMethod.POST, "{}", headers)
+//            val authorizeResponse = cardAPI.send(authorizeRequest)
+//
+//            Log.d("TAG", authorizeResponse.headers.toString())
+//
+//            val bodyResponse = authorizeResponse.body!!
+//            val authorizeJSON = PaymentsJSON(bodyResponse)
+
+            // fetch full scoped access token
+            val fsatRequest = APIRequest(
+                "v1/oauth2/token",
+                HttpMethod.POST,
+                "grant_type=client_credentials&response_type=token&return_authn_schemes=true",
+                "application/x-www-form-urlencoded"
+            )
+            val fsatResponse = cardAPI.send(fsatRequest)
+
+            val fsatBody = fsatResponse.body!!
+            val fsatJSON = PaymentsJSON(fsatBody)
+            val fsatToken = fsatJSON.getString("access_token")
+
+            Log.d("TAG", fsatResponse.toString())
+
+//            authorizeJSON.getLinkHref("confirm-payment-token")?.let { confirmHref ->
+//
+//                val confirmHeaders = mutableMapOf("PayPal-Request-Id" to requestID)
+//                val confirmRequest = HttpRequest(URL(confirmHref), HttpMethod.POST, null, confirmHeaders)
+//                confirmRequest.authOverride = fsatToken
+//                val confirmResponse = cardAPI.send(confirmRequest)
+//
+//                Log.d("TAG", confirmResponse.toString())
+//            }
+
+            // list vaulted payment methods
+            val getPaymentTokensRequest =
+                APIRequest("v3/vault/payment-tokens?customer_id=123", HttpMethod.GET, null, "application/json", fsatToken)
+            val paymentTokensResponse = cardAPI.send(getPaymentTokensRequest)
+            Log.d("TAG", paymentTokensResponse.toString())
+
+        } else if (response.payerActionHref == null) {
             val result = response.run {
                 CardResult(orderID, status, paymentSource)
             }

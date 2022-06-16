@@ -22,12 +22,43 @@ internal class HttpRequestFactory(private val language: String = Locale.getDefau
             "Accept-Language" to language
         )
 
-        val credentials = configuration.run { "$clientId:$clientSecret" }
-        headers["Authorization"] = "Basic ${credentials.base64encoded()}"
+        val authOverride = apiRequest.authOverride
+        if (authOverride != null) {
+            headers["Authorization"] = "Bearer $authOverride"
+        } else {
+            val credentials = configuration.run { "$clientId:$clientSecret" }
+            headers["Authorization"] = "Basic ${credentials.base64encoded()}"
+        }
 
+        val contentTypeOverride = apiRequest.contentTypeOverride
         if (method == HttpMethod.POST) {
-            headers["Content-Type"] = "application/json"
+            if (contentTypeOverride != null) {
+                headers["Content-Type"] = contentTypeOverride
+            } else {
+                headers["Content-Type"] = "application/json"
+            }
         }
         return HttpRequest(url, method, body, headers)
+    }
+
+    fun authorizeHttpRequest(httpRequest: HttpRequest, configuration: CoreConfig) {
+        val headers: MutableMap<String, String> = mutableMapOf(
+            "Accept-Encoding" to "gzip",
+            "Accept-Language" to language
+        )
+        headers += httpRequest.headers
+
+        val authOverride = httpRequest.authOverride
+        if (authOverride != null) {
+            headers["Authorization"] = "Bearer $authOverride"
+        } else {
+            val credentials = configuration.run { "$clientId:$clientSecret" }
+            headers["Authorization"] = "Basic ${credentials.base64encoded()}"
+        }
+
+        if (httpRequest.method == HttpMethod.POST) {
+            headers["Content-Type"] = "application/json"
+        }
+        httpRequest.headers = headers
     }
 }
