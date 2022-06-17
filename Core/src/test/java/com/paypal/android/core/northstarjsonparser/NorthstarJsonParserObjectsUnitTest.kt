@@ -105,62 +105,102 @@ class NorthstarJsonParserObjectsUnitTest {
 
     @Test
     fun `given an object with objects, string and list, it should return the same values`() {
+        val mockAnnotatedParamValue = "mock Value 1"
+        val mockMultiParamValue = "mock Value 2"
+        val mockValueString = "mock Value 3"
+
         val json = """
             {
-                "annotated_param": "value",
+                "annotated_param": $mockAnnotatedParamValue,
                 "list_of_complex_items": [
                     {
                         "multi_param_object": {
-                            "param1": "value1",
-                            "param2": "value2",
-                            "param3": "value3",    
+                            "param1": $mockMultiParamValue,
+                            "param2": $mockMultiParamValue,
+                            "param3": $mockMultiParamValue,    
                         }
                     },
                     {
                         "multi_param_object": {
-                            "param1": "value1",
-                            "param2": "value2",
-                            "param3": "value3",    
+                            "param1": $mockMultiParamValue,
+                            "param2": $mockMultiParamValue,
+                            "param3": $mockMultiParamValue,    
                         }
                     },
                     {
                         "multi_param_object": {
-                            "param1": "value1",
-                            "param2": "value2",
-                            "param3": "value3",    
+                            "param1": $mockMultiParamValue,
+                            "param2": $mockMultiParamValue,
+                            "param3": $mockMultiParamValue,    
                         }
                     },
                 ],
                 "multi_param_object": {
-                    "param1": "value1",
-                    "param2": "value2",
-                    "param3": "value3",    
+                    "param1": $mockMultiParamValue,
+                    "param2": $mockMultiParamValue,
+                    "param3": $mockMultiParamValue,    
                 },
                 "list_of_list": [
                     [
-                        { "value_string": "value" },
-                        { "value_string": "value" },
+                        { "value_string": $mockValueString },
+                        { "value_string": $mockValueString },
                     ],
                     [
-                        { "value_string": "value" },
-                        { "value_string": "value" },
-                        { "value_string": "value" },
+                        { "value_string": $mockValueString },
+                        { "value_string": $mockValueString },
+                        { "value_string": $mockValueString },
                     ],
                     [
-                        { "value_string": "value" },
-                        { "value_string": "value" },
-                        { "value_string": "value" },
-                        { "value_string": "value" },
+                        { "value_string": $mockValueString },
+                        { "value_string": $mockValueString },
+                        { "value_string": $mockValueString },
+                        { "value_string": $mockValueString },
                     ],
                 ],
                 "empty_list": [],
                 "simple_object_in_json": {
                     "value_object": {
-                        "value_string: "another value"
+                        "value_string": $mockValueString
                     }
                 }
             }
         """.trimIndent()
+
+        val expectedObject = ComplexObject(
+            simpleValue = mockAnnotatedParamValue,
+            multiParamObject = MultiParamObject(
+                mockMultiParamValue,
+                mockMultiParamValue,
+                mockMultiParamValue
+            ),
+            simpleObject = SimpleObjectParam(StringParamObject(mockValueString)),
+            listOfItems = listOf(
+                MultiParamObjectWrapper(MultiParamObject(mockMultiParamValue, mockMultiParamValue, mockMultiParamValue)),
+                MultiParamObjectWrapper(MultiParamObject(mockMultiParamValue, mockMultiParamValue, mockMultiParamValue)),
+                MultiParamObjectWrapper(MultiParamObject(mockMultiParamValue, mockMultiParamValue, mockMultiParamValue))
+            ),
+            listOfList = listOf(
+                listOf(
+                    StringParamObject(mockValueString),
+                    StringParamObject(mockValueString),
+                ),
+                listOf(
+                    StringParamObject(mockValueString),
+                    StringParamObject(mockValueString),
+                    StringParamObject(mockValueString)
+                ),
+                listOf(
+                    StringParamObject(mockValueString),
+                    StringParamObject(mockValueString),
+                    StringParamObject(mockValueString),
+                    StringParamObject(mockValueString)
+                ),
+            ),
+            emptyList = listOf()
+        )
+
+        val sut = NorthstarJsonParser().fromJson(JSONObject(json), ComplexObject::class)
+        assertEquals(sut, expectedObject)
     }
 
 }
@@ -179,6 +219,10 @@ data class MultiParamObject(
     val param3: String,
 )
 
+data class MultiParamObjectWrapper(
+    @JsonName("multi_param_object") val wrapped: MultiParamObject
+)
+
 data class ComplexObject(
     @JsonName("annotated_param") val simpleValue: String,
     val multiParamObject: MultiParamObject,
@@ -186,7 +230,7 @@ data class ComplexObject(
     @JsonName("object_not_in_json") val simpleObjectAbsent: SimpleObjectParam? = SimpleObjectParam(
         StringParamObject("default")
     ),
-    @JsonName("list_of_complex_items") val listOfItems: List<MultiParamObject>,
+    @JsonName("list_of_complex_items") val listOfItems: List<MultiParamObjectWrapper>,
     val listOfList: List<List<StringParamObject>>,
     val emptyList: List<StringParamObject>
 )
