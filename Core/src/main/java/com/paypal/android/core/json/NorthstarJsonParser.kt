@@ -7,6 +7,8 @@ import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
+import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
 
 class NorthstarJsonParser {
@@ -38,31 +40,40 @@ class NorthstarJsonParser {
         return constructor?.callBy(parameterMap)
     }
 
-    private fun getValueFromParameter(jsonObject: JSONObject, key: String?, parameter: KParameter) = when (parameter.type.classifier as KClass<*>) {
-        String::class -> {
-            checkParameterForValue(key, parameter) {
-                jsonObject.optOrNullString(key)
-            }
-        }
-        List::class -> {
-            checkParameterForValue(key, parameter) {
-                val optJsonArray = jsonObject.optJSONArray(key)
-                optJsonArray?.let {
-                    parseJsonArrayToList(
-                        it,
-                        parameter.type.arguments[0].type!!
-                    )
+    private fun getValueFromParameter(jsonObject: JSONObject, key: String?, parameter: KParameter): Any? {
+        val clazz = parameter.type.classifier as KClass<*>
+        return when {
+            clazz == String::class -> {
+                checkParameterForValue(key, parameter) {
+                    jsonObject.optOrNullString(key)
                 }
             }
-        }
-        else -> {
-            checkParameterForValue(key, parameter) {
-                val optJsonObject = jsonObject.optJSONObject(key)
-                optJsonObject?.let {
-                    fromJson(
-                        it,
-                        parameter.type.classifier!! as KClass<*>
-                    )
+            clazz == List::class -> {
+                checkParameterForValue(key, parameter) {
+                    val optJsonArray = jsonObject.optJSONArray(key)
+                    optJsonArray?.let {
+                        parseJsonArrayToList(
+                            it,
+                            parameter.type.arguments[0].type!!
+                        )
+                    }
+                }
+            }
+            clazz.isSubclassOf(Enum::class) -> {
+                checkParameterForValue(key, parameter) {
+                    val value = jsonObject.optOrNullString(key)
+                    getEnumValue(value, clazz)
+                }
+            }
+            else -> {
+                checkParameterForValue(key, parameter) {
+                    val optJsonObject = jsonObject.optJSONObject(key)
+                    optJsonObject?.let {
+                        fromJson(
+                            it,
+                            parameter.type.classifier!! as KClass<*>
+                        )
+                    }
                 }
             }
         }
@@ -71,15 +82,20 @@ class NorthstarJsonParser {
     private fun parseJsonArrayToList(jsonArray: JSONArray, type: KType): List<Any?> {
         val list = mutableListOf<Any?>()
         for (i in 0 until jsonArray.length()) {
-            val item = when (type.classifier) {
-                String::class -> {
+            val clazz = type.classifier as KClass<*>
+            val item = when {
+                clazz == String::class -> {
                     jsonArray.getString(i)
                 }
-                List::class -> {
+                clazz == List::class -> {
                     parseJsonArrayToList(
                         jsonArray.getJSONArray(i),
                         type.arguments[0].type!!
                     )
+                }
+                clazz.isSubclassOf(Enum::class) -> {
+                    val value = jsonArray.getString(i)
+                    getEnumValue(value, clazz)
                 }
                 else -> {
                     fromJson(jsonArray.getJSONObject(i), type.classifier as KClass<*>)
@@ -102,6 +118,11 @@ class NorthstarJsonParser {
             throw JSONException("No value for $key")
         }
         return value
+    }
+
+    private fun getEnumValue(value: String?, enum: KClass<*>): Any? {
+        val enumConstants = enum.java.enumConstants as Array<Enum<*>>
+        return enumConstants.firstOrNull { it.name == value }
     }
 
     // String extensions

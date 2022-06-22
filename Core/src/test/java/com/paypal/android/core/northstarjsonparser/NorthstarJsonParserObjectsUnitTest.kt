@@ -104,6 +104,22 @@ class NorthstarJsonParserObjectsUnitTest {
     }
 
     @Test
+    fun `it should strings to correct enum type`() {
+        val one = "ONE"
+        val expectedValue = SimpleEnumObject(TestEnum.ONE)
+
+        val json = """
+            {
+              "enum": $one
+            }
+        """.trimIndent()
+
+        val sut = NorthstarJsonParser().fromJson(JSONObject(json), SimpleEnumObject::class)
+
+        assertEquals(expectedValue, sut)
+    }
+
+    @Test
     fun `given an object with objects, string and list, it should return the same values`() {
         val mockAnnotatedParamValue = "mock Value 1"
         val mockMultiParamValue = "mock Value 2"
@@ -142,19 +158,19 @@ class NorthstarJsonParserObjectsUnitTest {
                 },
                 "list_of_list": [
                     [
-                        { "value_string": $mockValueString },
-                        { "value_string": $mockValueString },
+                        ${TestEnum.ONE},
+                        ${TestEnum.TWO},
                     ],
                     [
-                        { "value_string": $mockValueString },
-                        { "value_string": $mockValueString },
-                        { "value_string": $mockValueString },
+                        ${TestEnum.ONE},
+                        ${TestEnum.TWO},
+                        ${TestEnum.THREE},
                     ],
                     [
-                        { "value_string": $mockValueString },
-                        { "value_string": $mockValueString },
-                        { "value_string": $mockValueString },
-                        { "value_string": $mockValueString },
+                        ${TestEnum.ONE},
+                        ${TestEnum.TWO},
+                        ${TestEnum.THREE},
+                        ${TestEnum.FOUR},
                     ],
                 ],
                 "empty_list": [],
@@ -196,19 +212,19 @@ class NorthstarJsonParserObjectsUnitTest {
             ),
             listOfList = listOf(
                 listOf(
-                    StringParamObject(mockValueString),
-                    StringParamObject(mockValueString),
+                    TestEnum.ONE,
+                    TestEnum.TWO,
                 ),
                 listOf(
-                    StringParamObject(mockValueString),
-                    StringParamObject(mockValueString),
-                    StringParamObject(mockValueString)
+                    TestEnum.ONE,
+                    TestEnum.TWO,
+                    TestEnum.THREE
                 ),
                 listOf(
-                    StringParamObject(mockValueString),
-                    StringParamObject(mockValueString),
-                    StringParamObject(mockValueString),
-                    StringParamObject(mockValueString)
+                    TestEnum.ONE,
+                    TestEnum.TWO,
+                    TestEnum.THREE,
+                    TestEnum.FOUR
                 ),
             ),
             emptyList = listOf(),
@@ -226,6 +242,8 @@ class NorthstarJsonParserObjectsUnitTest {
 data class StringParamObject(val valueString: String)
 
 data class SimpleObjectParam(val valueObject: StringParamObject)
+
+data class SimpleEnumObject(val enum: TestEnum)
 
 data class ListStringParamObject(val valueList: List<String>)
 
@@ -249,9 +267,13 @@ data class ComplexObject(
         StringParamObject("default")
     ),
     @JsonName("list_of_complex_items") val listOfItems: List<MultiParamObjectWrapper>,
-    val listOfList: List<List<StringParamObject>>,
+    val listOfList: List<List<TestEnum>>,
     val emptyList: List<StringParamObject>,
     @JsonName("first_level.second_level.simple_string") val chainedString: String,
     @JsonName("first_level.second_level.multi_param_object") val chainedObject: MultiParamObject,
     @JsonName("first_level.second_level.simple_list") val chainedList: List<String>,
 )
+
+enum class TestEnum {
+    ONE, TWO, THREE, FOUR
+}
