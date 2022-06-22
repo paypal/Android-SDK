@@ -162,6 +162,21 @@ class NorthstarJsonParserObjectsUnitTest {
                     "value_object": {
                         "value_string": $mockValueString
                     }
+                },
+                "first_level": {
+                    "second_level": {
+                        "simple_string": $mockValueString,
+                        "multi_param_object": {
+                            "param1": $mockMultiParamValue,
+                            "param2": $mockMultiParamValue,
+                            "param3": $mockMultiParamValue,    
+                        },
+                        "simple_list": [
+                            $mockValueString,
+                            $mockValueString,
+                            $mockValueString
+                        ]
+                    }
                 }
             }
         """.trimIndent()
@@ -196,7 +211,10 @@ class NorthstarJsonParserObjectsUnitTest {
                     StringParamObject(mockValueString)
                 ),
             ),
-            emptyList = listOf()
+            emptyList = listOf(),
+            chainedString = mockValueString,
+            chainedObject = MultiParamObject(mockMultiParamValue, mockMultiParamValue, mockMultiParamValue),
+            chainedList = listOf(mockValueString, mockValueString, mockValueString)
         )
 
         val sut = NorthstarJsonParser().fromJson(JSONObject(json), ComplexObject::class)
@@ -232,5 +250,8 @@ data class ComplexObject(
     ),
     @JsonName("list_of_complex_items") val listOfItems: List<MultiParamObjectWrapper>,
     val listOfList: List<List<StringParamObject>>,
-    val emptyList: List<StringParamObject>
+    val emptyList: List<StringParamObject>,
+    @JsonName("first_level.second_level.simple_string") val chainedString: String,
+    @JsonName("first_level.second_level.multi_param_object") val chainedObject: MultiParamObject,
+    @JsonName("first_level.second_level.simple_list") val chainedList: List<String>,
 )

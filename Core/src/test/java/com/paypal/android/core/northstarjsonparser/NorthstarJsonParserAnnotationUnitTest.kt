@@ -50,8 +50,45 @@ class NorthstarJsonParserAnnotationUnitTest {
         val sut = NorthstarJsonParser().fromJson(JSONObject(json), CamelCaseParameter::class)
         assertEquals(sut?.camelCaseParameter, mockValue)
     }
+
+    @Test
+    fun `it should look for chained parameters down in json tree` () {
+        val mockValue = "mock value"
+        val json = """
+            {
+              "first_level": {
+                "second_level": {
+                    "simple_string": $mockValue,
+                    "simple_object": {
+                        "annotated_param": $mockValue
+                    },
+                    "simple_list": [
+                        $mockValue,
+                        $mockValue,
+                        $mockValue
+                    ]
+                }
+              }
+            }
+        """.trimIndent()
+
+        val expectedObject = ChainedParameterObject(
+            mockValue,
+            AnnotatedParamObject(mockValue),
+            listOf(mockValue, mockValue, mockValue)
+        )
+
+        val sut = NorthstarJsonParser().fromJson(JSONObject(json), ChainedParameterObject::class)
+        assertEquals(sut, expectedObject)
+    }
 }
 
 data class AnnotatedParamObject(@JsonName("annotated_param") val param: String)
 
 data class CamelCaseParameter(val camelCaseParameter: String)
+
+data class ChainedParameterObject(
+    @JsonName("first_level.second_level.simple_string") val chainedString: String,
+    @JsonName("first_level.second_level.simple_object") val chainedObject: AnnotatedParamObject,
+    @JsonName("first_level.second_level.simple_list") val chainedList: List<String>
+)

@@ -20,43 +20,52 @@ class NorthstarJsonParser {
         constructor?.parameters?.forEach { parameter ->
             // we look for annotation, if it doesn't exist, we turn param name to snake case.
             val annotation = parameter.annotations.firstOrNull { it is JsonName } as JsonName?
-            val key = annotation?.name ?: parameter.name?.camelToSnakeCase()
+            val keyPath = annotation?.name ?: parameter.name?.camelToSnakeCase() ?: ""
 
-            //if param is string, we look for value, if not, we recursively go down the json tree
-            val value = when (parameter.type.classifier as KClass<*>) {
-                String::class -> {
-                    checkParameterForValue(key, parameter) {
-                        jsonObject.optOrNullString(key)
-                    }
-                }
-                List::class -> {
-                    checkParameterForValue(key, parameter) {
-                        val optJsonArray = jsonObject.optJSONArray(key)
-                        optJsonArray?.let {
-                            parseJsonArrayToList(
-                                it,
-                                parameter.type.arguments[0].type!!
-                            )
-                        }
-                    }
-                }
-                else -> {
-                    checkParameterForValue(key, parameter) {
-                        val optJsonObject = jsonObject.optJSONObject(key)
-                        optJsonObject?.let {
-                            fromJson(
-                                it,
-                                parameter.type.classifier!! as KClass<*>
-                            )
-                        }
-                    }
-                }
+            val keys = keyPath.split(".").toMutableList()
+            var node = jsonObject
+            while (keys.size > 1) {
+                node = node.getJSONObject(keys[0])
+                keys.removeFirst()
             }
+            val key = keys[0]
+            //if param is string, we look for value, if not, we recursively go down the json tree
+            val value = getValueFromParameter(node, key, parameter)
             if (value != null || !parameter.isOptional) {
                 parameterMap[parameter] = value
             }
         }
         return constructor?.callBy(parameterMap)
+    }
+
+    private fun getValueFromParameter(jsonObject: JSONObject, key: String?, parameter: KParameter) = when (parameter.type.classifier as KClass<*>) {
+        String::class -> {
+            checkParameterForValue(key, parameter) {
+                jsonObject.optOrNullString(key)
+            }
+        }
+        List::class -> {
+            checkParameterForValue(key, parameter) {
+                val optJsonArray = jsonObject.optJSONArray(key)
+                optJsonArray?.let {
+                    parseJsonArrayToList(
+                        it,
+                        parameter.type.arguments[0].type!!
+                    )
+                }
+            }
+        }
+        else -> {
+            checkParameterForValue(key, parameter) {
+                val optJsonObject = jsonObject.optJSONObject(key)
+                optJsonObject?.let {
+                    fromJson(
+                        it,
+                        parameter.type.classifier!! as KClass<*>
+                    )
+                }
+            }
+        }
     }
 
     private fun parseJsonArrayToList(jsonArray: JSONArray, type: KType): List<Any?> {
