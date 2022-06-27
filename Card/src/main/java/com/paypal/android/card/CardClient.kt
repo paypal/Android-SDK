@@ -102,7 +102,7 @@ class CardClient internal constructor(
                         CardResult(
                             getOrderResponse.orderId,
                             getOrderResponse.orderStatus,
-                            metadata.paymentSource,
+                            getOrderResponse.paymentSource,
                             browserSwitchResult.deepLinkUrl
                         )
                     )

@@ -10,7 +10,9 @@ import com.paypal.android.core.OrderErrorDetail
 import com.paypal.android.core.OrderStatus
 import com.paypal.android.core.PayPalSDKError
 import com.paypal.android.core.PaymentsJSON
+import com.paypal.android.core.json.NorthstarJsonParser
 import org.json.JSONException
+import org.json.JSONObject
 
 internal class CardResponseParser {
 
@@ -41,8 +43,8 @@ internal class CardResponseParser {
     fun parseGetOrderInfoResponse(httpResponse: HttpResponse): GetOrderInfoResponse =
         try {
             val bodyResponse = httpResponse.body!!
-            val json = PaymentsJSON(bodyResponse)
-            GetOrderInfoResponse(json)
+            val json = JSONObject(bodyResponse)
+            NorthstarJsonParser().fromJson(json, GetOrderInfoResponse::class)!!
         } catch (ignored: JSONException) {
             val correlationID = httpResponse.headers["Paypal-Debug-Id"]
             throw APIClientError.dataParsingError(correlationID)
